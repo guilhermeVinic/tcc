@@ -1,0 +1,109 @@
+/* login.css - Versão com assets */
+:root {
+  --azul-primario: #1e88e5;
+  --azul-escuro: #0d47a1;
+  --branco: #ffffff;
+  --cinza-claro: #f5f7fa;
+  --cinza-texto: #666;
+  --vermelho-erro: #e53935;
+}
+
+.login-container {
+  min-height: 100vh;
+  /* Caminho corrigido para assets */
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.9), rgba(13, 71, 161, 0.9)), 
+              url('../assets/background.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-box {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.error-message {
+  color: var(--vermelho-erro);
+  background-color: rgba(229, 57, 53, 0.1);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.logo {
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.login-box h1 {
+  color: var(--azul-escuro);
+  margin: 0 0 30px 0;
+  font-size: 28px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--azul-escuro);
+  font-weight: 500;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  border-color: var(--azul-primario);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+}
+
+.login-button {
+  background: var(--azul-primario);
+  color: var(--branco);
+  font-size: 16px;
+  padding: 14px;
+  margin-top: 10px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.login-button:hover {
+  background: var(--azul-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Versão mobile */
+@media (max-width: 768px) {
+  .login-box {
+    padding: 30px;
+    margin: 0 20px;
+  }
+  
+  .logo {
+    height: 60px;
+  }
+}
