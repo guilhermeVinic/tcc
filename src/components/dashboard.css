@@ -1,0 +1,203 @@
+:root {
+  --azul-primario: #1e88e5;
+  --azul-escuro: #0d47a1;
+  --branco: #ffffff;
+  --cinza-claro: #f5f7fa;
+  --cinza-borda: #e0e0e0;
+  --verde-sucesso: #4caf50;
+  --vermelho-alerta: #e53935;
+  --amarelo-alerta: #fbc02d;
+  --cinza-texto: #616161;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--cinza-claro);
+  color: var(--cinza-texto);
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: var(--branco);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  height: 70px;
+  width: auto;
+}
+
+.dashboard-header h1 {
+  color: var(--azul-escuro);
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.logout-button {
+  background-color: var(--azul-primario);
+  color: var(--branco);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: var(--azul-escuro);
+  transform: translateY(-3px);
+}
+
+.dashboard-nav {
+  display: flex;
+  background-color: var(--branco);
+  padding: 10px 30px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+.nav-button {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  margin-right: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--cinza-texto);
+  border-bottom: 3px solid transparent;
+  transition: color 0.3s, border-bottom-color 0.3s;
+}
+
+.nav-button:hover {
+  color: var(--azul-primario);
+}
+
+.nav-button.active {
+  color: var(--azul-escuro);
+  border-bottom-color: var(--azul-primario);
+  font-weight: 700;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: var(--branco);
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--azul-escuro);
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.agendamentos-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agendamento-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 15px 10px;
+  border-bottom: 1px solid var(--cinza-borda);
+  font-size: 15px;
+  color: var(--cinza-texto);
+}
+
+.agendamento-item span {
+  flex: 1 1 140px;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: capitalize;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status.ativo, 
+.status.confirmado, 
+.status.concluido {
+  background-color: var(--verde-sucesso);
+  color: var(--branco);
+}
+
+.status.pendente {
+  background-color: var(--amarelo-alerta);
+  color: #333;
+}
+
+.status.cancelado, 
+.status.rejeitado {
+  background-color: var(--vermelho-alerta);
+  color: var(--branco);
+}
+
+.loading-text, .no-data {
+  font-style: italic;
+  color: var(--cinza-texto);
+  text-align: center;
+  padding: 25px 0;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .dashboard-header h1 {
+    font-size: 20px;
+  }
+  .logo {
+    height: 50px;
+  }
+  .nav-button {
+    font-size: 14px;
+    margin-right: 12px;
+  }
+  .agendamento-item {
+    flex-direction: column;
+  }
+  .agendamento-item span {
+    flex: unset;
+  }
+}
