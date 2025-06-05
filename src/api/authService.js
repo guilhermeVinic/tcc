@@ -6,5 +6,11 @@ export const login = async (email, senha) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, senha })
   });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Erro ao fazer login: ${text}`);
+  }
+
   return response.json();
 };

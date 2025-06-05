@@ -20,29 +20,24 @@ const dbConfig = {
   connectionLimit: 10,
   queueLimit: 0
 };
+const cors = require('cors');
+app.use(cors());
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:3001', // Altere para a porta do seu frontend
+  origin: 'http://localhost:3001', // frontend React
   credentials: true
 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Garante que todas as respostas sejam JSON
-app.use((req, res, next) => {
-  res.setHeader('Content-Type', 'application/json');
-  next();
-});
-
 // Pool de conexões
 let pool;
 
-// Funções auxiliares
+// Banco de dados
 const initializeDatabase = async () => {
   try {
-    // Cria conexão temporária para criar o banco se não existir
     const tempConn = await mysql.createConnection({
       host: dbConfig.host,
       user: dbConfig.user,
@@ -52,10 +47,7 @@ const initializeDatabase = async () => {
     await tempConn.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database}`);
     await tempConn.end();
 
-    // Cria pool de conexões principal
     pool = mysql.createPool(dbConfig);
-
-    // Cria tabelas
     await createTables();
     await seedInitialData();
 
@@ -123,7 +115,7 @@ const seedInitialData = async () => {
   }
 };
 
-// Middlewares customizados
+// Middlewares de autenticação
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -144,21 +136,19 @@ const authenticate = async (req, res, next) => {
 
 const isAdmin = async (req, res, next) => {
   try {
-    const [user] = await pool.query(
-      'SELECT tipo FROM usuarios WHERE id = ?',
-      [req.userId]
-    );
+    const [user] = await pool.query('SELECT tipo FROM usuarios WHERE id = ?', [req.userId]);
 
-    if (user[0].tipo !== 'admin') {
+    if (user.length === 0 || user[0].tipo !== 'admin') {
       return res.status(403).json({ error: 'Acesso restrito a administradores' });
     }
+
     next();
   } catch (error) {
     res.status(500).json({ error: 'Erro ao verificar permissões' });
   }
 };
 
-// Rotas de Autenticação
+// 🔐 Rota de login
 app.post('/login', async (req, res) => {
   try {
     const { email, senha } = req.body;
@@ -167,10 +157,7 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
-    const [users] = await pool.query(
-      'SELECT * FROM usuarios WHERE email = ?',
-      [email]
-    );
+    const [users] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
 
     if (users.length === 0) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -198,7 +185,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Rotas de Serviços
+// 🧼 Rota para buscar todos os serviços
 app.get('/servicos', async (req, res) => {
   try {
     const [servicos] = await pool.query('SELECT * FROM servicos');
@@ -209,22 +196,18 @@ app.get('/servicos', async (req, res) => {
   }
 });
 
+// 🔧 Atualizar um serviço (apenas admin)
 app.put('/servicos/:id', authenticate, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { preco, tipo, motivo_promocao } = req.body;
 
-    // Validação básica
     if (!preco || isNaN(preco)) {
       return res.status(400).json({ error: 'Preço inválido' });
     }
 
-    console.log(`Atualizando serviço ${id} com:`, { preco, tipo, motivo_promocao });
-
     const [result] = await pool.query(
-      `UPDATE servicos 
-       SET preco = ?, tipo = ?, motivo_promocao = ?
-       WHERE id = ?`,
+      `UPDATE servicos SET preco = ?, tipo = ?, motivo_promocao = ? WHERE id = ?`,
       [preco, tipo, motivo_promocao, id]
     );
 
@@ -232,26 +215,19 @@ app.put('/servicos/:id', authenticate, isAdmin, async (req, res) => {
       return res.status(404).json({ error: 'Serviço não encontrado' });
     }
 
-    // Retorna o serviço atualizado
-    const [updatedService] = await pool.query(
-      'SELECT * FROM servicos WHERE id = ?',
-      [id]
-    );
-
-    res.json(updatedService[0]);
+    const [updated] = await pool.query('SELECT * FROM servicos WHERE id = ?', [id]);
+    res.json(updated[0]);
   } catch (error) {
     console.error('Erro ao atualizar serviço:', error);
-    res.status(500).json({ 
-      error: 'Erro ao atualizar serviço',
-      message: error.message 
-    });
+    res.status(500).json({ error: 'Erro ao atualizar serviço', message: error.message });
   }
 });
 
-// Inicialização do servidor
+// Inicializa o servidor
 initializeDatabase().then(() => {
   app.listen(port, () => {
     console.log(`🚀 Servidor rodando na porta ${port}`);
+    console.log(`📌 Endpoint de login: http://localhost:${port}/login`);
     console.log(`📌 Endpoint de serviços: http://localhost:${port}/servicos`);
   });
 });
