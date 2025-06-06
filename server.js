@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+const cors = require('cors'); // Mantenha apenas esta linha
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql2/promise');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'segredo_para_desenvolvimento';
 
 // Configuração do banco de dados
@@ -20,15 +20,13 @@ const dbConfig = {
   connectionLimit: 10,
   queueLimit: 0
 };
-const cors = require('cors');
-app.use(cors());
 
-// Middlewares
 app.use(cors({
   origin: 'http://localhost:3001', // frontend React
   credentials: true
 }));
 
+// Middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
